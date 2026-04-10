@@ -19,29 +19,29 @@ La infraestructura inicial presenta un riesgo crítico: todos los servidores com
 Para mitigar el riesgo de movimiento lateral, se propone una arquitectura de tres zonas segregadas lógicamente mediante un Firewall de Próxima Generación (NGFW):
 
 ### 🔴 Zona WAN (Internet - Red Pública)
-* **Nivel de confianza:** Nulo (0%).
+* **Nivel de confianza:** Nulo.
 * **Descripción:** Representa el exterior de la organización. Cualquier IP de Internet que intente acceder a los servicios públicos corporativos.
 * **Servicios ubicados:** Ninguno propio. Solo clientes externos y atacantes potenciales.
 
 ### 🟡 Zona DMZ (Zona Desmilitarizada)
-* **Nivel de confianza:** Medio (50%).
-* **Descripción:** Subred aislada que actúa como "escaparate" de la empresa. Los servidores aquí ubicados son accesibles desde Internet, pero no tienen permiso para iniciar conexiones hacia la Red Interna corporativa.
+* **Nivel de confianza:** Medio.
+* **Descripción:** Subred aislada que actúa como "escaparate" de la empresa. Los servidores aquí ubicados son accesibles desde Internet, pero no tienen permiso para iniciar conexiones hacia la red interna corporativa.
 * **Servicios ubicados:**
   * **Servidor Web:** (Apache/Nginx) Expone la página corporativa.
   * **Servidor de Correo (Frontend):** (Postfix/Dovecot) Recibe conexiones SMTP/IMAP del exterior.
 
 ### 🟢 Zona LAN (Red Interna Corporativa)
-* **Nivel de confianza:** Alto (100%).
+* **Nivel de confianza:** Alto.
 * **Descripción:** El "corazón" de la empresa. Contiene los activos más valiosos y no tiene acceso directo desde Internet bajo ningún concepto.
 * **Servicios ubicados:**
-  * **Base de Datos (BBDD):** (MySQL/PostgreSQL) Almacena información sensible. Solo el servidor Web de la DMZ puede consultarla.
+  * **Base de Datos (BBDD):** (MySQL/PostgreSQL) Almacena información sensible. Solo el servidor web de la DMZ puede consultarla.
   * **Equipos de empleados (End-points):** Workstations del personal.
 
 <br>
 
 ## 3. Matriz de Reglas de Firewall (Políticas de Filtrado)
 
-La política de seguridad se basa en el principio de **"Denegación por Defecto"** (Default Deny). A continuación, se detallan las excepciones estrictamente necesarias para el flujo de negocio:
+La política de seguridad se basa en el principio de **Default Deny**. A continuación, se detallan las excepciones estrictamente necesarias para el flujo de negocio:
 
 | ID | Origen | Destino | Puerto / Protocolo | Acción | Justificación Técnica |
 |:---|:---:|:---:|:---:|:---:|:---|
@@ -57,5 +57,5 @@ La política de seguridad se basa en el principio de **"Denegación por Defecto"
 <br>
 
 ## 4. Conclusión Final
-El diseño propuesto transforma una arquitectura plana y vulnerable en un entorno estructurado de Defensa en Profundidad. La creación de la Zona DMZ garantiza que, en el peor de los escenarios (un *defacement* o compromiso total del servidor Web), el atacante se encuentre "encerrado" en una subred sin privilegios, incapaz de saltar a la Red Interna para exfiltrar la base de datos corporativa. Esta arquitectura cumple con los estándares actuales de seguridad perimetral para servicios expuestos.
+El diseño propuesto transforma una arquitectura plana y vulnerable en un entorno estructurado de **defensa en profundidad**. La creación de la Zona DMZ garantiza que, en el peor de los escenarios (un *defacement* o compromiso total del servidor Web), el atacante se encuentre "encerrado" en una subred sin privilegios, incapaz de saltar a la Red Interna para exfiltrar la base de datos corporativa. Esta arquitectura cumple con los estándares actuales de seguridad perimetral para servicios expuestos.
     
