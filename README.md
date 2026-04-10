@@ -49,7 +49,6 @@ sudo ufw enable
   
   <br>
   <p align="center">
-    <!-- INSTRUCCIÓN: ARRASTRA AQUÍ LA IMAGEN DEL 'ufw status verbose' (Asegúrate de dejar una línea en blanco arriba y abajo) -->
     <img src="https://github.com/user-attachments/assets/20f2b5c6-f355-47e7-be9a-fee9ec6e5478" width="800">
   </p>
 </details>
@@ -69,8 +68,7 @@ sudo ss -lntp | egrep ':(25|587|993)'
   
   <br>
   <p align="center">
-    <!-- INSTRUCCIÓN: ARRASTRA AQUÍ LA IMAGEN DEL COMANDO 'ss -lntp' -->
-    <img src="https://github.com/user-attachments/assets/10aa5e2b-d7f4-487a-8898-b1e15ebf6edd" width="800">
+    <img src="https://github.com/user-attachments/assets/47e2822c-215d-4f63-b240-f9bac6f0976c" width="800">
   </p>
 </details>
 
@@ -89,7 +87,6 @@ openssl s_client -connect localhost:993
   
   <br>
   <p align="center">
-    <!-- INSTRUCCIÓN: ARRASTRA AQUÍ LA IMAGEN DEL COMANDO 'openssl s_client' -->
     <img src="https://github.com/user-attachments/assets/c96da253-f709-4dc5-b0b6-e9e2699684e5" width="800">
   </p>
 </details>
@@ -107,7 +104,4 @@ Si un empleado de la organización sincroniza su bandeja de entrada desde una re
 <br>
 
 *Este proyecto forma parte de mi portfolio técnico. Puedes ver más casos de estudio en mi [perfil principal de GitHub](https://github.com/byoffensive).*
-
-
-
 
