@@ -26,6 +26,7 @@ sudo systemctl status apache2
 ```
 
 ![Captura 1a](capturas/captura_01a_checks_iniciales.png)
+
 *Comprobaciones iniciales. El DNS no resolvía mail.ejemplo.prueba y Apache estaba activo.*
 
 Dado que el DNS no resolvía `mail.ejemplo.prueba`, se añadieron las entradas en `/etc/hosts`:
@@ -36,9 +37,11 @@ Dado que el DNS no resolvía `mail.ejemplo.prueba`, se añadieron las entradas e
 ```
 
 ![Captura 1b](capturas/captura_01b_hosts.png)
+
 *Archivo /etc/hosts con las entradas añadidas.*
 
 ![Captura 1c](capturas/captura_01c_getent.png)
+
 *Ambos nombres resuelven correctamente a 172.16.0.1.*
 
 ---
@@ -57,6 +60,7 @@ sudo apt install -y mailutils unzip
 Postfix ya estaba instalado de una práctica anterior, por lo que se procedió directamente a su configuración.
 
 ![Captura 2](capturas/captura_02_postfix_instalado.png)
+
 *Postfix ya se encontraba instalado en el sistema (versión 3.8.6).*
 
 ### 3.1 /etc/postfix/main.cf
@@ -70,6 +74,7 @@ inet_interfaces = all
 ```
 
 ![Captura 3](capturas/captura_03_maincf.png)
+
 */etc/postfix/main.cf con los parámetros configurados.*
 
 ### 3.2 /etc/postfix/master.cf — puerto 587
@@ -80,6 +85,7 @@ submission inet n       -       y       -       -       smtpd
 ```
 
 ![Captura 4](capturas/captura_04_mastercf.png)
+
 *master.cf con el bloque submission descomentado y TLS obligatorio.*
 
 ### 3.3 Reinicio y comprobación
@@ -91,6 +97,7 @@ sudo postfix status
 ```
 
 ![Captura 5](capturas/captura_05_postfix_status.png)
+
 *Estado de Postfix tras el reinicio.*
 
 ---
@@ -109,6 +116,7 @@ mail_location = maildir:~/Maildir
 ```
 
 ![Captura 6](capturas/captura_06_mailconf.png)
+
 *10-mail.conf con mail_location activo.*
 
 ### 4.2 Reinicio y comprobación
@@ -120,6 +128,7 @@ sudo systemctl status dovecot --no-pager
 ```
 
 ![Captura 7](capturas/captura_07_dovecot_status.png)
+
 *Dovecot activo con estado active (running).*
 
 ---
@@ -132,6 +141,7 @@ sudo adduser maria
 ```
 
 ![Captura 8](capturas/captura_08_usuarios.png)
+
 *Creación de los usuarios juan (UID 1001) y maria (UID 1002).*
 
 ---
@@ -160,6 +170,7 @@ ssl_key  = </etc/ssl/private/ejemplo.prueba
 ```
 
 ![Captura 9](capturas/captura_09_dovecot_tls.png)
+
 *Dovecot activo tras aplicar la configuración TLS.*
 
 ---
@@ -178,6 +189,7 @@ sudo ufw status verbose
 ```
 
 ![Captura 10](capturas/captura_10_ufw.png)
+
 *Estado del firewall UFW con los puertos de correo permitidos.*
 
 ---
@@ -189,6 +201,7 @@ sudo ss -lntp | egrep ':(25|587|993)'
 ```
 
 ![Captura 11](capturas/captura_11_puertos.png)
+
 *Puertos 993 (Dovecot), 587 y 25 (Postfix) en estado LISTEN.*
 
 ---
@@ -200,6 +213,7 @@ openssl s_client -connect localhost:993
 ```
 
 ![Captura 12](capturas/captura_12_tls.png)
+
 *Handshake TLS con Verify return code: 18.*
 
 ---
@@ -213,4 +227,5 @@ mail
 ```
 
 ![Captura 13](capturas/captura_13_correo.png)
+
 *Correo recibido en el buzón de maria, procesado por Postfix en mail.ejemplo.prueba.*
