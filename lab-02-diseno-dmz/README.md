@@ -1,61 +1,49 @@
-<div align="center">
-  <h1>🏢 Diseño de Arquitectura Segura y Políticas de Firewall</h1>
-  <p><i>Segmentación de red corporativa mediante DMZ y reglas de filtrado perimetral</i></p>
-</div>
-<br>
-
-## Objetivo de la actividad
-Analizar un escenario empresarial y diseñar una política de firewall que proteja una red
-corporativa. El alumnado deberá identificar los servicios necesarios, definir zonas de
-seguridad y proponer reglas de filtrado adecuadas.
+# Diseño de arquitectura segura y políticas de firewall
 
 
-## 1. Descripción del Escenario
-El presente documento define la arquitectura de red y las políticas de seguridad perimetral para una infraestructura corporativa que requiere exponer servicios al público (Web y Correo) manteniendo la confidencialidad e integridad de sus datos internos (Base de Datos). 
+---
 
-La infraestructura inicial presenta un riesgo crítico: todos los servidores comparten el mismo segmento de red conectados a Internet. Esto implica que, si un atacante compromete el servidor web público, tendría acceso directo a la base de datos interna.
+## Objetivo
 
-## 2. Clasificación de Zonas de Seguridad (Segmentación)
-Para mitigar el riesgo de movimiento lateral, se propone una arquitectura de tres zonas segregadas lógicamente mediante un Firewall de Próxima Generación (NGFW):
+Analizar un escenario empresarial y diseñar una política de firewall que proteja una red corporativa. El objetivo es identificar los servicios necesarios, definir zonas de seguridad y proponer reglas de filtrado adecuadas.
 
-### 🔴 Zona WAN (Internet - Red Pública)
-* **Nivel de confianza:** Nulo.
-* **Descripción:** Representa el exterior de la organización. Cualquier IP de Internet que intente acceder a los servicios públicos corporativos.
-* **Servicios ubicados:** Ninguno propio. Solo clientes externos y atacantes potenciales.
+---
 
-### 🟡 Zona DMZ (Zona Desmilitarizada)
-* **Nivel de confianza:** Medio.
-* **Descripción:** Subred aislada que actúa como "escaparate" de la empresa. Los servidores aquí ubicados son accesibles desde Internet, pero no tienen permiso para iniciar conexiones hacia la red interna corporativa.
-* **Servicios ubicados:**
-  * **Servidor Web:** (Apache/Nginx) Expone la página corporativa.
-  * **Servidor de Correo (Frontend):** (Postfix/Dovecot) Recibe conexiones SMTP/IMAP del exterior.
+## 1. Descripción del escenario
 
-### 🟢 Zona LAN (Red Interna Corporativa)
-* **Nivel de confianza:** Alto.
-* **Descripción:** El "corazón" de la empresa. Contiene los activos más valiosos y no tiene acceso directo desde Internet bajo ningún concepto.
-* **Servicios ubicados:**
-  * **Base de Datos (BBDD):** (MySQL/PostgreSQL) Almacena información sensible. Solo el servidor web de la DMZ puede consultarla.
-  * **Equipos de empleados (End-points):** Workstations del personal.
+La infraestructura de partida presenta un problema crítico: todos los servidores comparten el mismo segmento de red conectado a Internet. Si un atacante compromete el servidor web público, tiene acceso directo a la base de datos interna sin ninguna barrera adicional.
 
-<br>
+Para corregir esto se propone una arquitectura segmentada en tres zonas separadas por un firewall.
 
-## 3. Matriz de Reglas de Firewall (Políticas de Filtrado)
+---
 
-La política de seguridad se basa en el principio de **Default Deny**. A continuación, se detallan las excepciones estrictamente necesarias para el flujo de negocio:
+## 2. Zonas de seguridad
 
-| ID | Origen | Destino | Puerto / Protocolo | Acción | Justificación Técnica |
-|:---|:---:|:---:|:---:|:---:|:---|
-| **R1** | Internet (WAN) | Web (DMZ) | **443 / TCP** (HTTPS) | ✅ PERMITIR | Tráfico web público cifrado hacia la página corporativa. *(Se asume que el puerto 80 redirige al 443).* |
-| **R2** | Internet (WAN) | Correo (DMZ) | **25 / TCP** (SMTP) | ✅ PERMITIR | Recepción de correos electrónicos desde otros servidores de Internet. |
-| **R3** | Internet (WAN) | Correo (DMZ) | **587, 993 / TCP** | ✅ PERMITIR | Envío (Submission) y lectura (IMAPS) de correos por parte de los clientes. |
-| **R4** | Web (DMZ) | BBDD (LAN) | **3306 / TCP** (MySQL) | ✅ PERMITIR | El backend de la web necesita hacer consultas a la base de datos interna. |
-| **R5** | LAN | Internet (WAN) | **80, 443 / TCP** | ✅ PERMITIR | Navegación de los empleados hacia Internet. |
-| **R6** | Internet (WAN) | BBDD (LAN) | **Cualquiera** | ❌ BLOQUEAR | **Regla Crítica:** Prevención de exposición directa de la base de datos al exterior. |
-| **R7** | DMZ | LAN | **Cualquiera** (Excepto R4) | ❌ BLOQUEAR | Previene el movimiento lateral si un servidor de la DMZ es vulnerado. |
-| **R8** | Cualquiera | Cualquiera | **Cualquiera** | ❌ BLOQUEAR | Política "Default Deny" (Cierra todo lo no explícitamente permitido). |
+**Zona WAN (Internet):** representa el exterior de la organización. Nivel de confianza nulo. Cualquier IP de Internet que intente acceder a los servicios públicos corporativos parte de esta zona.
 
-<br>
+**Zona DMZ (Zona Desmilitarizada):** subred aislada que actúa como escaparate de la empresa. Los servidores aquí ubicados son accesibles desde Internet pero no pueden iniciar conexiones hacia la red interna. Contiene el servidor web (Apache/Nginx) y el servidor de correo (Postfix/Dovecot).
 
-## 4. Conclusión Final
-El diseño propuesto transforma una arquitectura plana y vulnerable en un entorno estructurado de **defensa en profundidad**. La creación de la Zona DMZ garantiza que, en el peor de los escenarios (un *defacement* o compromiso total del servidor Web), el atacante se encuentre "encerrado" en una subred sin privilegios, incapaz de saltar a la Red Interna para exfiltrar la base de datos corporativa. Esta arquitectura cumple con los estándares actuales de seguridad perimetral para servicios expuestos.
-    
+**Zona LAN (Red interna):** contiene los activos más valiosos y no tiene acceso directo desde Internet. Aquí se encuentra la base de datos (MySQL/PostgreSQL) y los equipos de los empleados.
+
+---
+
+## 3. Matriz de reglas de firewall
+
+La política base es *default deny*: todo el tráfico no explícitamente permitido queda bloqueado. Las excepciones necesarias para el funcionamiento de los servicios son las siguientes:
+
+| ID | Origen | Destino | Puerto / Protocolo | Acción | Justificación |
+|---|---|---|---|---|---|
+| R1 | WAN | Web (DMZ) | 443/TCP (HTTPS) | Permitir | Tráfico web público cifrado hacia la página corporativa |
+| R2 | WAN | Correo (DMZ) | 25/TCP (SMTP) | Permitir | Recepción de correos desde otros servidores de Internet |
+| R3 | WAN | Correo (DMZ) | 587, 993/TCP | Permitir | Envío autenticado y lectura segura de correo por parte de los clientes |
+| R4 | Web (DMZ) | BBDD (LAN) | 3306/TCP (MySQL) | Permitir | El backend de la web necesita consultar la base de datos interna |
+| R5 | LAN | WAN | 80, 443/TCP | Permitir | Navegación de los empleados hacia Internet |
+| R6 | WAN | BBDD (LAN) | Cualquiera | Bloquear | Previene la exposición directa de la base de datos al exterior |
+| R7 | DMZ | LAN | Cualquiera (excepto R4) | Bloquear | Evita el movimiento lateral si un servidor de la DMZ es comprometido |
+| R8 | Cualquiera | Cualquiera | Cualquiera | Bloquear | Política default deny |
+
+---
+
+## 4. Conclusión
+
+El diseño transforma una arquitectura plana y vulnerable en un entorno de defensa en profundidad. La DMZ garantiza que, en el peor caso, un atacante que comprometa el servidor web quede aislado en esa subred sin posibilidad de acceder a la base de datos interna. Esta arquitectura es el estándar habitual para cualquier infraestructura que necesite exponer servicios públicos manteniendo protegidos sus datos internos.
