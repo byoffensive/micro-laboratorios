@@ -1,6 +1,6 @@
-# Lab 03 — Instalación de servidor de correo electrónico con Postfix y Dovecot
+# Instalación de servidor de correo electrónico con Postfix y Dovecot
 
-**Jhoan Camilo Arango Ortiz** · 2º ASIR online
+
 
 ---
 

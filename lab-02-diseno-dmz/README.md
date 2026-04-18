@@ -1,6 +1,5 @@
-# Lab 02 — Diseño de arquitectura segura y políticas de firewall
+# Diseño de arquitectura segura y políticas de firewall
 
-**Jhoan Camilo Arango Ortiz** · 2º ASIR online
 
 ---
 
